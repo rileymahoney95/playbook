@@ -16,15 +16,15 @@ owner. Unexpected server failures are sanitized before reaching the client.
 
 ## Tables
 
-| Table | Purpose |
-| --- | --- |
-| `owners` | Singleton MVP owner and Argon2id password hash |
-| `sessions` | SHA-256 hashes of random 256-bit session tokens and expiry |
-| `login_attempts` | Persistent, atomic rate-limit counters in 10-minute windows |
-| `routines` | Editable metadata, category, optimistic version, archival state |
-| `routine_steps` | Ordered template steps, instructions, quantities, duration, URL |
-| `runs` | One execution, snapshotted metadata/version, status and timestamps |
-| `run_steps` | Snapshotted steps, checks, timer state, optimistic version |
+| Table            | Purpose                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| `owners`         | Singleton MVP owner and Argon2id password hash                     |
+| `sessions`       | SHA-256 hashes of random 256-bit session tokens and expiry         |
+| `login_attempts` | Persistent, atomic rate-limit counters in 10-minute windows        |
+| `routines`       | Editable metadata, category, optimistic version, archival state    |
+| `routine_steps`  | Ordered template steps, instructions, quantities, duration, URL    |
+| `runs`           | One execution, snapshotted metadata/version, status and timestamps |
+| `run_steps`      | Snapshotted steps, checks, timer state, optimistic version         |
 
 Runs reference the originating template, but never read their instructions from
 it. Editing a routine replaces its template steps in a transaction; existing run
@@ -56,21 +56,21 @@ steps remain unchanged. Archive hides a template and retains its history.
 All JSON writes send `Content-Type: application/json` and `X-Playbook-Request: 1`.
 Except login, logout and health, endpoints require the session cookie.
 
-| Method/path | Action |
-| --- | --- |
-| `GET /health` | Database-backed readiness |
-| `GET /api/session` | Check authentication |
-| `POST /api/login`, `/api/logout` | Sign in/out |
-| `POST /api/password` | Verify current password, replace it, revoke sessions |
-| `GET/POST /api/routines` | List/create templates |
-| `GET/PUT /api/routines/:id` | Read/edit a template (version required on edit) |
-| `POST /api/routines/:id/archive` | Archive after ending any active run |
-| `POST /api/routines/:id/runs` | Start or resume |
-| `GET /api/runs/:id` | Read a run and its steps |
-| `PATCH /api/runs/:id/steps/:stepId` | Set a check or start/pause/reset its timer |
-| `POST /api/runs/:id/complete` | Verify all steps and finish |
-| `POST /api/runs/:id/discard` | End without completing |
-| `GET /api/history?offset=0` | 25 finished/discarded runs, newest first |
+| Method/path                         | Action                                               |
+| ----------------------------------- | ---------------------------------------------------- |
+| `GET /health`                       | Database-backed readiness                            |
+| `GET /api/session`                  | Check authentication                                 |
+| `POST /api/login`, `/api/logout`    | Sign in/out                                          |
+| `POST /api/password`                | Verify current password, replace it, revoke sessions |
+| `GET/POST /api/routines`            | List/create templates                                |
+| `GET/PUT /api/routines/:id`         | Read/edit a template (version required on edit)      |
+| `POST /api/routines/:id/archive`    | Archive after ending any active run                  |
+| `POST /api/routines/:id/runs`       | Start or resume                                      |
+| `GET /api/runs/:id`                 | Read a run and its steps                             |
+| `PATCH /api/runs/:id/steps/:stepId` | Set a check or start/pause/reset its timer           |
+| `POST /api/runs/:id/complete`       | Verify all steps and finish                          |
+| `POST /api/runs/:id/discard`        | End without completing                               |
+| `GET /api/history?offset=0`         | 25 finished/discarded runs, newest first             |
 
 ## Extension points and limits
 

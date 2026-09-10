@@ -8,10 +8,13 @@ export class AppError extends Data.TaggedError('AppError')<{
 export function task<A>(work: () => Promise<A>) {
   return Effect.tryPromise({
     try: work,
-    catch: error => {
+    catch: (error) => {
       if (error instanceof AppError) return error;
       // Do not log SQL parameters, request bodies, connection strings, or passwords.
-      console.error('Server operation failed', error instanceof Error ? error.name : 'UnknownError');
+      console.error(
+        'Server operation failed',
+        error instanceof Error ? error.name : 'UnknownError',
+      );
       return new AppError({ status: 500, message: 'Something went wrong. Please try again.' });
     },
   });

@@ -8,5 +8,13 @@ morning mobility routine, with a generic routine model for future use cases.
 - Railway environment: `production`
 - Railway application service: `playbook`
 
-Application and persistent storage will run on Railway. Product decisions and
-local development/deployment instructions will be recorded as the MVP is built.
+The application runs as one Bun service and a Railway Postgres service with a
+5 GB persistent volume. The application domain is
+https://playbook-production-8801.up.railway.app.
+
+The app uses Bun, TypeScript, Effect, Drizzle, React, Vite, and Tailwind. See
+[README](../README.md) for local development and deployment instructions and
+[architecture](architecture.md) for the data model and consistency boundaries.
+
+Initial access was verified by pushing commit `86b4d1b` to GitHub and setting and
+reading a variable on the Railway application service before product work began.

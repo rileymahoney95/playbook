@@ -1,72 +1,215 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @layer base {
-  :root { color: #17212f; background: #fff; font-size: 16px; font-family: var(--font-sans); }
-  body { margin: 0; min-width: 320px; }
-  h1 { @apply text-2xl sm:text-3xl font-semibold tracking-tight; overflow-wrap: anywhere; }
-  h2 { @apply text-xl font-semibold; overflow-wrap: anywhere; }
-  h3 { @apply text-base font-semibold; }
-  p, a, label, span { overflow-wrap: anywhere; }
-  button, input, textarea { font: inherit; }
-  button, a { -webkit-tap-highlight-color: transparent; }
-  button { cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: .5; }
-  a { color: inherit; }
-  :focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
-  label { @apply block text-sm font-medium; }
-  input:not([type=checkbox]), textarea { @apply block w-full mt-2 rounded-md border border-slate-300 bg-white px-3 py-2.5 text-base font-normal text-slate-900; }
-  textarea { resize: vertical; min-height: 80px; }
-  input[type=checkbox] { accent-color: #1d4ed8; }
-  input:disabled, textarea:disabled { @apply opacity-70; }
-  progress { @apply block w-full h-2 rounded-full overflow-hidden; accent-color: #1d4ed8; }
-  progress::-webkit-progress-bar { background: #e2e8f0; }
-  progress::-webkit-progress-value { background: #1d4ed8; }
+  :root {
+    color: #17212f;
+    background: #fff;
+    font-size: 16px;
+    font-family: var(--font-sans);
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+  }
+  h1 {
+    @apply text-2xl sm:text-3xl font-semibold tracking-tight;
+    overflow-wrap: anywhere;
+  }
+  h2 {
+    @apply text-xl font-semibold;
+    overflow-wrap: anywhere;
+  }
+  h3 {
+    @apply text-base font-semibold;
+  }
+  p,
+  a,
+  label,
+  span {
+    overflow-wrap: anywhere;
+  }
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  a {
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+  }
+  label {
+    @apply block text-sm font-medium;
+  }
+  input:not([type='checkbox']),
+  textarea {
+    @apply block w-full mt-2 rounded-md border border-slate-300 bg-white px-3 py-2.5 text-base font-normal text-slate-900;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  input[type='checkbox'] {
+    accent-color: #1d4ed8;
+  }
+  input:disabled,
+  textarea:disabled {
+    @apply opacity-70;
+  }
+  progress {
+    @apply block w-full h-2 rounded-full overflow-hidden;
+    accent-color: #1d4ed8;
+  }
+  progress::-webkit-progress-bar {
+    background: #e2e8f0;
+  }
+  progress::-webkit-progress-value {
+    background: #1d4ed8;
+  }
 }
 
 @layer components {
-  .shell { @apply max-w-3xl mx-auto px-5 sm:px-8; }
-  .content { @apply pt-8 pb-16; }
-  .brand { @apply text-xl font-bold tracking-tight no-underline; }
-  .app-header { @apply border-b border-slate-200; }
-  .header-inner { @apply flex flex-wrap items-center justify-between gap-x-5 gap-y-4 py-5; }
-  .app-header nav { @apply flex gap-5 text-sm; }
-  .app-header nav a { @apply text-slate-600 py-1; }
-  .app-header nav a.active { @apply text-blue-700 underline underline-offset-8; }
-  .login { @apply max-w-sm mx-auto px-6 pt-20 pb-10; }
-  .page-title { @apply flex flex-wrap gap-4 items-center justify-between mb-6 mt-4; }
-  .button { @apply inline-flex items-center justify-center gap-2 rounded-md bg-blue-700 text-white px-4 py-2.5 text-sm font-semibold min-h-11 no-underline; }
-  .button:hover:not(:disabled) { @apply bg-blue-800; }
-  .button.secondary { @apply bg-white text-slate-800 border border-slate-300; }
-  .button.secondary:hover:not(:disabled) { @apply bg-slate-50; }
-  .button.compact { @apply px-3 py-1.5 min-h-10; }
-  .text-link { @apply underline underline-offset-4 text-blue-700; }
-  .muted { @apply text-slate-600; }
-  .optional { @apply font-normal text-slate-500 ml-1; }
-  .eyebrow { @apply text-xs uppercase font-semibold tracking-wider text-slate-500; }
-  .card { @apply rounded-lg border border-slate-200 p-5; }
-  .routine-card { @apply grid gap-5; }
-  .notice { @apply rounded-md border border-blue-200 bg-blue-50 p-4 text-blue-950; }
-  .notice.error { @apply border-red-200 bg-red-50 text-red-800 flex flex-wrap gap-3 items-center justify-between my-4; }
-  .empty { @apply border border-dashed border-slate-300 rounded-lg p-8 text-center; }
-  .step-check { width: 26px; height: 26px; flex-shrink: 0; margin-top: 1px; cursor: pointer; }
-  .step-label { @apply text-base font-semibold cursor-pointer; }
-  .step-done { @apply bg-slate-50; }
-  .step-done .step-label { @apply text-slate-500 line-through; }
-  .timer { @apply flex flex-wrap items-center gap-3 mt-4; }
-  .save-bar { @apply flex flex-wrap gap-3 items-center bg-white border-t border-slate-200 pt-5; }
-  .history-row { @apply flex flex-wrap items-center justify-between gap-3 no-underline; }
-  .history-row:hover { @apply bg-slate-50; }
-  .badge { @apply text-xs font-medium px-2.5 py-1 rounded bg-slate-100 text-slate-600; }
-  .badge.completed { @apply bg-blue-50 text-blue-800; }
+  .shell {
+    @apply max-w-3xl mx-auto px-5 sm:px-8;
+  }
+  .content {
+    @apply pt-8 pb-16;
+  }
+  .brand {
+    @apply text-xl font-bold tracking-tight no-underline;
+  }
+  .app-header {
+    @apply border-b border-slate-200;
+  }
+  .header-inner {
+    @apply flex flex-wrap items-center justify-between gap-x-5 gap-y-4 py-5;
+  }
+  .app-header nav {
+    @apply flex gap-5 text-sm;
+  }
+  .app-header nav a {
+    @apply text-slate-600 py-1;
+  }
+  .app-header nav a.active {
+    @apply text-blue-700 underline underline-offset-8;
+  }
+  .login {
+    @apply max-w-sm mx-auto px-6 pt-20 pb-10;
+  }
+  .page-title {
+    @apply flex flex-wrap gap-4 items-center justify-between mb-6 mt-4;
+  }
+  .button {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-blue-700 text-white px-4 py-2.5 text-sm font-semibold min-h-11 no-underline;
+  }
+  .button:hover:not(:disabled) {
+    @apply bg-blue-800;
+  }
+  .button.secondary {
+    @apply bg-white text-slate-800 border border-slate-300;
+  }
+  .button.secondary:hover:not(:disabled) {
+    @apply bg-slate-50;
+  }
+  .button.compact {
+    @apply px-3 py-1.5 min-h-10;
+  }
+  .text-link {
+    @apply underline underline-offset-4 text-blue-700;
+  }
+  .muted {
+    @apply text-slate-600;
+  }
+  .optional {
+    @apply font-normal text-slate-500 ml-1;
+  }
+  .eyebrow {
+    @apply text-xs uppercase font-semibold tracking-wider text-slate-500;
+  }
+  .card {
+    @apply rounded-lg border border-slate-200 p-5;
+  }
+  .routine-card {
+    @apply grid gap-5;
+  }
+  .notice {
+    @apply rounded-md border border-blue-200 bg-blue-50 p-4 text-blue-950;
+  }
+  .notice.error {
+    @apply border-red-200 bg-red-50 text-red-800 flex flex-wrap gap-3 items-center justify-between my-4;
+  }
+  .empty {
+    @apply border border-dashed border-slate-300 rounded-lg p-8 text-center;
+  }
+  .step-check {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .step-label {
+    @apply text-base font-semibold cursor-pointer;
+  }
+  .step-done {
+    @apply bg-slate-50;
+  }
+  .step-done .step-label {
+    @apply text-slate-500 line-through;
+  }
+  .timer {
+    @apply flex flex-wrap items-center gap-3 mt-4;
+  }
+  .save-bar {
+    @apply flex flex-wrap gap-3 items-center bg-white border-t border-slate-200 pt-5;
+  }
+  .history-row {
+    @apply flex flex-wrap items-center justify-between gap-3 no-underline;
+  }
+  .history-row:hover {
+    @apply bg-slate-50;
+  }
+  .badge {
+    @apply text-xs font-medium px-2.5 py-1 rounded bg-slate-100 text-slate-600;
+  }
+  .badge.completed {
+    @apply bg-blue-50 text-blue-800;
+  }
 }
 
 @media (max-width: 420px) {
-  .header-inner { column-gap: 12px; }
-  .app-header nav { order: 3; flex-basis: 100%; }
-  .card { padding: 16px; }
+  .header-inner {
+    column-gap: 12px;
+  }
+  .app-header nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .card {
+    padding: 16px;
+  }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}

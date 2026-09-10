@@ -1,0 +1,10 @@
+node_modules
+dist
+.local
+.env*
+drizzle/meta
+bun.lock
+test-results
+playwright-report
+.agents
+.claude
