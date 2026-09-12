@@ -2,7 +2,28 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Routine, RoutineInput, StepInput } from '../shared/types';
 import { api, ApiError, message, useData } from './api';
-import { Back, ErrorNotice, Loading, PageTitle } from './ui';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronLeftIcon,
+  GripIcon,
+  PlusIcon,
+  TrashIcon,
+} from './icons';
+import {
+  Badge,
+  Button,
+  ErrorNotice,
+  Eyebrow,
+  IconButton,
+  Loading,
+  pad2,
+  PageHead,
+  Panel,
+  SectionHead,
+  TextAreaField,
+  TextField,
+} from './ui';
 
 type DraftStep = StepInput & { key: string };
 const blankStep = (): DraftStep => ({
@@ -17,8 +38,18 @@ const blankStep = (): DraftStep => ({
 export function RoutineEditor() {
   const { id } = useParams();
   const { data, error, loading, reload } = useData<Routine>(id ? `/api/routines/${id}` : null);
-  if (loading) return <Loading />;
-  if (error) return <ErrorNotice retry={reload}>{error}</ErrorNotice>;
+  if (loading)
+    return (
+      <div className="page">
+        <Loading />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="page">
+        <ErrorNotice retry={reload}>{error}</ErrorNotice>
+      </div>
+    );
   if (id && !data) return null;
   return (
     <EditorForm key={data ? `${data.id}:${data.version}` : 'new'} routine={data} reload={reload} />
@@ -112,208 +143,241 @@ function EditorForm({ routine, reload }: { routine: Routine | null; reload: () =
     if (!dirty || window.confirm('Leave without saving your changes?'))
       navigate(routine ? `/routines/${routine.id}` : '/');
   };
+  const back = (
+    <IconButton label="Back" onClick={cancel}>
+      <ChevronLeftIcon />
+    </IconButton>
+  );
   if (routine?.archivedAt)
     return (
-      <>
-        <Back />
-        <p className="notice mt-5">This routine is archived.</p>
-      </>
+      <div className="page">
+        <PageHead
+          back={back}
+          eyebrow={<Eyebrow>Edit routine</Eyebrow>}
+          title={routine.title}
+          titleClass="title-lg"
+        />
+        <Panel className="notice-info">
+          <div>
+            <Badge tone="off">Archived</Badge>
+          </div>
+          <p className="small muted">This routine is archived. Its saved history remains.</p>
+        </Panel>
+      </div>
     );
   return (
-    <>
-      <PageTitle>{routine ? 'Edit routine' : 'New routine'}</PageTitle>
-      {routine?.activeRunId && (
-        <p className="notice mb-6">
-          A run is in progress. These edits will apply to your next run.
-        </p>
-      )}
-      <form onSubmit={save} onChange={() => setDirty(true)} className="grid gap-6">
-        <fieldset disabled={busy} className="grid gap-5">
-          <label>
-            Routine name
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              maxLength={120}
-              placeholder="Morning mobility"
-            />
-          </label>
-          <label>
-            Category
-            <input
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-              maxLength={60}
-              list="routine-categories"
-            />
-            <datalist id="routine-categories">
-              <option>Mobility</option>
-              <option>Workout</option>
-              <option>Baby care</option>
-              <option>Maintenance</option>
-              <option>General</option>
-            </datalist>
-          </label>
-          <label>
-            Description <span className="optional">optional</span>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={2000}
-              rows={2}
-            />
-          </label>
-        </fieldset>
-        <div className="flex justify-between items-center">
-          <h2>Steps</h2>
-          <span className="muted text-sm">{steps.length} / 100</span>
-        </div>
-        {steps.map((step, index) => (
-          <fieldset
-            disabled={busy}
-            key={step.key}
-            className="card grid gap-4"
-            aria-label={`Step ${index + 1}`}
+    <div className="page">
+      <PageHead
+        back={back}
+        eyebrow={<Eyebrow>{routine ? 'Edit routine' : 'New routine'}</Eyebrow>}
+        title={routine?.title ?? 'Untitled routine'}
+        titleClass="title-lg"
+        action={
+          <Button
+            variant="primary"
+            size="sm"
+            type="submit"
+            form="routine-form"
+            busy={busy}
+            busyLabel="Saving…"
+            disabled={conflicted}
           >
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3>Step {index + 1}</h3>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="button compact secondary"
-                  disabled={index === 0}
-                  onClick={() => move(index, -1)}
-                  aria-label={`Move step ${index + 1} up`}
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="button compact secondary"
-                  disabled={index === steps.length - 1}
-                  onClick={() => move(index, 1)}
-                  aria-label={`Move step ${index + 1} down`}
-                >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  className="button compact secondary"
-                  disabled={steps.length === 1}
-                  onClick={() => {
-                    setDirty(true);
-                    setSteps((old) => old.filter((_, i) => i !== index));
-                  }}
-                  aria-label={`Remove step ${index + 1}`}
-                >
-                  Remove
-                </button>
+            Save routine
+          </Button>
+        }
+      />
+      {routine?.activeRunId && (
+        <Panel className="notice-info">
+          <Eyebrow live>In progress</Eyebrow>
+          <p className="small muted">
+            A run is in progress. These edits will apply to your next run.
+          </p>
+        </Panel>
+      )}
+      <form
+        id="routine-form"
+        onSubmit={save}
+        onChange={() => setDirty(true)}
+        className="grid gap-6"
+      >
+        <fieldset disabled={busy} className="panel setting m-0 min-w-0">
+          <TextField
+            label="Routine name"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            maxLength={120}
+            placeholder="Morning mobility"
+          />
+          <TextField
+            label="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            maxLength={60}
+            list="routine-categories"
+          />
+          <datalist id="routine-categories">
+            <option>Mobility</option>
+            <option>Workout</option>
+            <option>Baby care</option>
+            <option>Maintenance</option>
+            <option>General</option>
+          </datalist>
+          <TextAreaField
+            label="Description"
+            optional
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={2000}
+            rows={2}
+            placeholder="What is this routine for?"
+          />
+        </fieldset>
+        <section className="grid gap-2">
+          <SectionHead title="Steps" meta={`${steps.length} / 100`} />
+          {steps.map((step, index) => (
+            <fieldset
+              disabled={busy}
+              key={step.key}
+              className="panel edit-step m-0 min-w-0"
+              aria-label={`Step ${index + 1}`}
+            >
+              <span className="grip" aria-hidden="true">
+                <GripIcon />
+              </span>
+              <div className="fields">
+                <div className="head">
+                  <span className="t">Step {pad2(index + 1)}</span>
+                  <div className="flex gap-1">
+                    <IconButton
+                      size="sm"
+                      label={`Move step ${index + 1} up`}
+                      disabled={index === 0}
+                      onClick={() => move(index, -1)}
+                    >
+                      <ArrowUpIcon />
+                    </IconButton>
+                    <IconButton
+                      size="sm"
+                      label={`Move step ${index + 1} down`}
+                      disabled={index === steps.length - 1}
+                      onClick={() => move(index, 1)}
+                    >
+                      <ArrowDownIcon />
+                    </IconButton>
+                    <IconButton
+                      size="sm"
+                      label={`Remove step ${index + 1}`}
+                      disabled={steps.length === 1}
+                      onClick={() => {
+                        setDirty(true);
+                        setSteps((old) => old.filter((_, i) => i !== index));
+                      }}
+                    >
+                      <TrashIcon />
+                    </IconButton>
+                  </div>
+                </div>
+                <TextField
+                  label="Step name"
+                  value={step.title}
+                  onChange={(e) => updateStep(index, { title: e.target.value })}
+                  required
+                  maxLength={160}
+                />
+                <TextAreaField
+                  label="Instructions"
+                  optional
+                  rows={2}
+                  value={step.instructions}
+                  onChange={(e) => updateStep(index, { instructions: e.target.value })}
+                  maxLength={4000}
+                />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <TextField
+                    label="Reps or quantity"
+                    optional
+                    value={step.quantity}
+                    onChange={(e) => updateStep(index, { quantity: e.target.value })}
+                    maxLength={120}
+                    placeholder="6 reps / 30 seconds each side"
+                  />
+                  <TextField
+                    label="Timer in seconds"
+                    optional
+                    type="number"
+                    min={1}
+                    max={86400}
+                    step={1}
+                    inputMode="numeric"
+                    value={step.durationSeconds ?? ''}
+                    onChange={(e) =>
+                      updateStep(index, {
+                        durationSeconds: e.target.value === '' ? null : Number(e.target.value),
+                      })
+                    }
+                    placeholder="30"
+                  />
+                </div>
+                <TextField
+                  label="Reference link"
+                  optional
+                  type="url"
+                  value={step.referenceUrl}
+                  onChange={(e) => updateStep(index, { referenceUrl: e.target.value })}
+                  maxLength={2000}
+                  placeholder="https://…"
+                />
               </div>
-            </div>
-            <label>
-              Step name
-              <input
-                value={step.title}
-                onChange={(e) => updateStep(index, { title: e.target.value })}
-                required
-                maxLength={160}
-              />
-            </label>
-            <label>
-              Instructions <span className="optional">optional</span>
-              <textarea
-                rows={2}
-                value={step.instructions}
-                onChange={(e) => updateStep(index, { instructions: e.target.value })}
-                maxLength={4000}
-              />
-            </label>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label>
-                Reps or quantity <span className="optional">optional</span>
-                <input
-                  value={step.quantity}
-                  onChange={(e) => updateStep(index, { quantity: e.target.value })}
-                  maxLength={120}
-                  placeholder="6 reps / 30 seconds each side"
-                />
-              </label>
-              <label>
-                Timer in seconds <span className="optional">optional</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={86400}
-                  step={1}
-                  inputMode="numeric"
-                  value={step.durationSeconds ?? ''}
-                  onChange={(e) =>
-                    updateStep(index, {
-                      durationSeconds: e.target.value === '' ? null : Number(e.target.value),
-                    })
-                  }
-                  placeholder="30"
-                />
-              </label>
-            </div>
-            <label>
-              Reference link <span className="optional">optional</span>
-              <input
-                type="url"
-                value={step.referenceUrl}
-                onChange={(e) => updateStep(index, { referenceUrl: e.target.value })}
-                maxLength={2000}
-                placeholder="https://…"
-              />
-            </label>
-          </fieldset>
-        ))}
-        <button
-          type="button"
-          className="button secondary justify-self-start"
-          disabled={busy || steps.length >= 100}
-          onClick={() => {
-            setDirty(true);
-            setSteps((old) => [...old, blankStep()]);
-          }}
-        >
-          Add step
-        </button>
-        <ErrorNotice>{error}</ErrorNotice>
-        {conflicted && (
+            </fieldset>
+          ))}
           <button
             type="button"
-            className="text-link justify-self-start"
+            className="dashed"
+            disabled={busy || steps.length >= 100}
+            onClick={() => {
+              setDirty(true);
+              setSteps((old) => [...old, blankStep()]);
+            }}
+          >
+            <PlusIcon />
+            Add step
+          </button>
+        </section>
+        <ErrorNotice>{error}</ErrorNotice>
+        {conflicted && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-self-start"
             onClick={() => {
               if (window.confirm('Reload the saved version? Your unsaved changes will be lost.'))
                 void reload();
             }}
           >
             Reload saved version
-          </button>
+          </Button>
         )}
-        <div className="save-bar">
-          <button className="button" disabled={busy || conflicted}>
-            {busy ? 'Saving…' : 'Save routine'}
-          </button>
-          <button type="button" className="button secondary" onClick={cancel} disabled={busy}>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button onClick={cancel} disabled={busy}>
             Cancel
-          </button>
-          <span className="muted text-sm" role="status">
+          </Button>
+          <span className="small faint mono" role="status">
             {dirty ? 'Unsaved changes' : ''}
           </span>
         </div>
       </form>
       {routine && (
-        <div className="mt-10 border-t border-slate-200 pt-6">
-          <button className="text-link text-sm text-red-700" onClick={archive} disabled={busy}>
-            Archive routine
-          </button>
-          <p className="muted text-sm mt-2">Removes it from your list and keeps its history.</p>
+        <div className="grid gap-2 border-t border-line pt-4">
+          <div>
+            <Button variant="danger-ghost" size="sm" onClick={archive} disabled={busy}>
+              Archive routine
+            </Button>
+          </div>
+          <p className="small faint">Removes it from your list and keeps its history.</p>
         </div>
       )}
-    </>
+    </div>
   );
 }
