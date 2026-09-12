@@ -7,7 +7,7 @@ async function login(page: Page) {
   await page.goto('/');
   await page.getByLabel('Password', { exact: true }).fill(password!);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Your routines' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Routines', exact: true })).toBeVisible();
 }
 
 test('create, edit, reorder, time, resume, complete, review history and archive a routine', async ({
@@ -47,10 +47,11 @@ test('create, edit, reorder, time, resume, complete, review history and archive 
   await page.getByRole('button', { name: 'Remove step 3', exact: true }).click();
   await page.getByRole('button', { name: 'Save routine', exact: true }).click();
   await page.getByRole('button', { name: 'Start routine', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Finish routine' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Mark complete', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Finish routine' })).toHaveCount(0);
   const runUrl = page.url();
   await page.getByRole('checkbox', { name: 'Complete Clean', exact: true }).click();
-  await expect(page.getByText('1 of 2 steps done', { exact: true })).toBeVisible();
+  await expect(page.getByText('1 of 2 complete', { exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('checkbox', { name: 'Complete Clean', exact: true })).toBeChecked();
   await page.getByRole('button', { name: 'Start timer for Prepare', exact: true }).click();
@@ -82,14 +83,14 @@ test('create, edit, reorder, time, resume, complete, review history and archive 
     .click();
   await expect(page.getByRole('heading', { name: 'Routine complete', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Start again', exact: true }).click();
-  await expect(page.getByText('0 of 2 steps done', { exact: true })).toBeVisible();
+  await expect(page.getByText('0 of 2 complete', { exact: true })).toBeVisible();
   page.once('dialog', (dialog) => dialog.accept());
   await page.getByRole('button', { name: 'Discard run', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Run discarded', exact: true })).toBeVisible();
   await page.goto(`${routineUrl}/edit`);
   page.once('dialog', (dialog) => dialog.accept());
   await page.getByRole('button', { name: 'Archive routine', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Your routines', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Routines', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name, exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
@@ -99,6 +100,7 @@ test('create, edit, reorder, time, resume, complete, review history and archive 
     fullPage: true,
   });
   expect(errors).toEqual([]);
+  await page.getByRole('link', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Sign in', exact: true })).toBeVisible();
   await page.reload();

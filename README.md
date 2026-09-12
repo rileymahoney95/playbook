@@ -16,7 +16,7 @@ with your own in **Edit routine**.
 - Editing a template leaves existing runs and history intact.
 - Change the password in Settings. Other sessions are revoked immediately.
 
-The interface is intentionally plain. The app requires connectivity to save;
+The interface follows the Biosphere design system described in [DESIGN.md](DESIGN.md). The app requires connectivity to save;
 failed requests are shown and reconciled with the server. Active runs refresh
 every five seconds and when a tab regains focus. Timers persist their start time
 and remaining duration, including across reloads; they do not provide background
