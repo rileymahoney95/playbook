@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Biosphere Screens</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  :root { color-scheme: light dark; --ink: #11181d; --ink-2: #4d5a63; --ground: #e6eaec; --line: rgba(16,36,44,.14); --accent: #0b8680; }
+  @media (prefers-color-scheme: dark) { :root { --ink: #e7edf0; --ink-2: #98a5ad; --ground: #0a0d10; --line: rgba(186,214,222,.12); --accent: #46d4cb; } }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: Geist, system-ui, sans-serif; padding: 32px 24px 48px; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  p { margin: 0 0 24px; color: var(--ink-2); max-width: 64ch; font-size: 14px; }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
+  .shot { display: grid; gap: 10px; }
+  .shot .lbl { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); display: flex; justify-content: space-between; }
+  .shot .lbl b { color: var(--accent); font-weight: 500; }
+  .phone { width: 100%; max-width: 390px; aspect-ratio: 390 / 844; border-radius: 28px; border: 1px solid var(--line); overflow: hidden; background: #000; box-shadow: 0 30px 60px -30px rgba(0,0,0,.5); justify-self: center; }
+  .phone iframe { width: 100%; height: 100%; border: 0; display: block; }
+  h2 { font-size: 13px; font-weight: 600; color: var(--ink-2); letter-spacing: .02em; margin: 0 0 14px; }
+  .wide { max-width: 1280px; aspect-ratio: 1280 / 820; border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+  .wide iframe { width: 100%; height: 100%; border: 0; display: block; }
+</style>
+</head>
+<body>
+<h1>Playbook · Biosphere</h1>
+<p>The two core screens in both appearances, live from the prototype. Each frame is interactive: tap steps, start the timer, check things off. Open <code>prototype.html</code> for the full flow.</p>
+
+<h2>Routine library</h2>
+<div class="row">
+  <div class="shot"><div class="lbl"><span>Library</span><b>Dark</b></div><div class="phone"><iframe src="prototype.html?screen=library&theme=dark&proto=0" title="Library, dark"></iframe></div></div>
+  <div class="shot"><div class="lbl"><span>Library</span><b>Light</b></div><div class="phone"><iframe src="prototype.html?screen=library&theme=light&proto=0" title="Library, light"></iframe></div></div>
+</div>
+
+<h2>Active routine · Morning mobility</h2>
+<div class="row">
+  <div class="shot"><div class="lbl"><span>Run · timer running</span><b>Dark</b></div><div class="phone"><iframe src="prototype.html?screen=run&state=running&theme=dark&proto=0" title="Run, dark"></iframe></div></div>
+  <div class="shot"><div class="lbl"><span>Run · timer running</span><b>Light</b></div><div class="phone"><iframe src="prototype.html?screen=run&state=running&theme=light&proto=0" title="Run, light"></iframe></div></div>
+</div>
+
+<h2>Completion state</h2>
+<div class="row">
+  <div class="shot"><div class="lbl"><span>Complete</span><b>Dark</b></div><div class="phone"><iframe src="prototype.html?screen=run&state=complete&theme=dark&proto=0" title="Complete, dark"></iframe></div></div>
+  <div class="shot"><div class="lbl"><span>Complete</span><b>Light</b></div><div class="phone"><iframe src="prototype.html?screen=run&state=complete&theme=light&proto=0" title="Complete, light"></iframe></div></div>
+</div>
+
+<h2>Desktop adaptation</h2>
+<div class="wide"><iframe src="prototype.html?screen=run&theme=dark&proto=0" title="Run, desktop, dark"></iframe></div>
+</body>
+</html>
